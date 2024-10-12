@@ -1,7 +1,13 @@
+import { FC } from "react";
 import clsx from "clsx";
 import css from "./LoadMoreBtn.module.css";
 
-export default function LoadMoreBtn({ onClick }) {
+
+interface LoadMoreProps {
+    onClick: () => void;
+}
+
+const LoadMoreBtn: FC<LoadMoreProps> = ({ onClick }) => {
     return (
         <div className={clsx(css.container)}>
             <button
@@ -14,3 +20,5 @@ export default function LoadMoreBtn({ onClick }) {
         </div>
     );
 }
+
+export default LoadMoreBtn;

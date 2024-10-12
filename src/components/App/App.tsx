@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import Error from "../Error/Error";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import ImageModal from "../ImageModal/ImageModal";
 import Loader from "../Loader/Loader";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import SearchBar from "../SearchBar/SearchBar";
 import { getImages } from "../../unsplash-api";
+import { Image } from "../types";
 import { Toaster } from 'react-hot-toast';
 
 import clsx from "clsx";
@@ -13,14 +14,15 @@ import css from "./App.module.css";
 
 
 export default function App() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [images, setImages] = useState([]);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(999);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [images, setImages] = useState<Image[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(999);
+  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   
   useEffect(() => {
     if (query === "" || page > totalPages) {
@@ -31,11 +33,13 @@ export default function App() {
       try {
         setLoading(true);
         setError(false);
+        setErrorMessage(null);
         const newImages = await getImages(query, page);
         setImages(prevState => [...prevState, ...newImages.results]);
         setTotalPages(newImages.total_pages);
       } catch (error) {
         setError(true);
+        setErrorMessage("Oops... something went wrong!");
       } finally {
         setLoading(false);
       }
@@ -43,18 +47,19 @@ export default function App() {
     getGallery();
   }, [query, page]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (images.length > 0) {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: "smooth",
-        });
-      }, 500);
+        const interval = setInterval(() => {
+            window.scrollBy(0, 10);
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
+                clearInterval(interval);
+            }
+        }, 20);
+        return () => clearInterval(interval);
     }
-  }, [images]);
+}, [images]);
 
-  const handleSearch = (newQuery) => {
+  const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
     setPage(1);
     setImages([]);
@@ -64,7 +69,7 @@ export default function App() {
     setPage(prevPage => prevPage + 1);
   };
   
-  const openModal = (image) => {
+  const openModal = (image: Image) => {
     setSelectedImage(image);
     setModalOpen(true);
   };
@@ -84,7 +89,7 @@ export default function App() {
                 />
             )}
             
-            {error && <ErrorMessage />}
+            {error && errorMessage && <Error error={errorMessage} />}
             {loading && <Loader />}
             {images.length > 0 && !loading && page < totalPages && (
                 <LoadMoreBtn onClick={handleLoadMore}

@@ -1,18 +1,21 @@
 import Modal from 'react-modal';
-
+import { FC } from 'react';
+import { toast } from "react-hot-toast";
+import { ImageModalProps } from '../types';
 import clsx from "clsx";
 import css from "./ImageModal.module.css";
 
 Modal.setAppElement("#root");
 
-export default function ImageModal({ isOpen, onClose, onImage }) {
-    if (!onImage) return null;
+const ImageModal: FC<ImageModalProps> = ({ isOpen, onClose, onImage }) => {
+    if (!onImage)
+        return null;
 
     const {
-        urls = {},
+        urls = { small: "", regular: "" },
         alt_description,
         description,
-        user = {},
+        user = { name: "Unknown" },
         likes = 0
     } = onImage;
 
@@ -49,20 +52,4 @@ export default function ImageModal({ isOpen, onClose, onImage }) {
     );
 }
 
-
-// useEffect та функція handleEsc для закриття модального вікна великого зображення
-// по кліку на клавішу Esc. Але вони не потрібні в цьому коді, оскільки працюють
-// підкапотно в бібліотеці React Modal (залишу про всяк випадок на майбутнє).
-
-// useEffect(() => {
-//         const handleEsc = (event) => {
-//             if (event.key === 'Escape') {
-//                 onClose();
-//             }
-//         };
-
-//         window.addEventListener('keydown', handleEsc);
-//         return () => {
-//             window.removeEventListener('keydown', handleEsc);
-//         };
-//     }, [onClose]);
+export default ImageModal;

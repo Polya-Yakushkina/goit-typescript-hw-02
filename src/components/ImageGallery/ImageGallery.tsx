@@ -1,9 +1,15 @@
 import ImageCard from "../ImageCard/ImageCard";
-
+import { Image } from "../types";
 import clsx from "clsx";
 import css from "./ImageGallery.module.css";
 
-export default function ImageGallery({ items, onImageClick }) {
+
+interface GalleryProps {
+    items: Image[];
+    onImageClick: (image: Image) => void;
+}
+
+const ImageGallery = ({ items, onImageClick }: GalleryProps) => {
     return (
         <ul className={clsx(css.list)}>
             {items.map((item) => (
@@ -17,3 +23,5 @@ export default function ImageGallery({ items, onImageClick }) {
         </ul>
     );
 }
+
+export default ImageGallery;

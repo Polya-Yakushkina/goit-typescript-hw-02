@@ -1,7 +1,14 @@
+import { Image } from "../types";
 import clsx from "clsx";
 import css from "./ImageCard.module.css";
 
-export default function ImageCard ({ image, onClick  }) {
+
+interface ImageCardProps {
+    image: Image;
+    onClick: () => void;
+}
+
+const ImageCard = ({ image, onClick  }: ImageCardProps) => {
     return (
         <div className={clsx(css.item)} onClick={onClick}>
             <img
@@ -11,3 +18,5 @@ export default function ImageCard ({ image, onClick  }) {
         </div>
     );
 }
+
+export default ImageCard;

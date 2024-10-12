@@ -1,9 +1,11 @@
+import { FC } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 
 import clsx from "clsx";
 import css from "./Loader.module.css";
 
-export default function Loader() {
+
+const Loader: FC = () => {
     return (
         <div className={clsx(css.container)}>
             <ThreeDots
@@ -19,3 +21,5 @@ export default function Loader() {
         </div>
     );
 }
+
+export default Loader;
